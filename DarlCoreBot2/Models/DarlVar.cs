@@ -116,7 +116,8 @@ namespace DarlCoreBot2.Models
         /// list of categories, each indexed against a truth value.
         /// </summary>
         /// <value>The categories.</value>
-        public Dictionary<string, double> categories { get; set; }
+        //public Dictionary<string, double> categories { get; set; }
+        public List<KeyValuePair<string,double>> categories { get; set; }
 
 
         public List<DateTime> times { get; set; }

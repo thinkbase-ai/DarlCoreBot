@@ -37,34 +37,43 @@ namespace DarlCoreBot2.Bots
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            var req = new GraphQLRequest() { Variables = new {model = botModelName, convId = turnContext.Activity.Conversation.Id, data = new { name = "", Value = turnContext.Activity.Text, dataType = DarlVar.DataType.textual } },
-                Query = @"query Interact($model: String!, $convId: String!, $data: darlVarUpdate!){interact(botModelName: $model, conversationId: $convId, conversationData: $data){ response { value dataType } }}",
-                OperationName = "Interact"
-            };
-            var resp = await client.PostAsync(req);
-            var responses = resp.GetDataFieldAs<List<InteractResponse>>("interact");
-
-            foreach(var r in responses)
+            try
             {
-                Activity m = MessageFactory.Text("internal error");
-                switch (r.response.dataType)
+                var req = new GraphQLRequest()
                 {
-                    case DarlVar.DataType.categorical:
-                        m = MessageFactory.SuggestedActions(r.response.categories.Keys.ToList(), r.response.value) as Activity;
-                        break;
+                    Variables = new { model = botModelName, convId = turnContext.Activity.Conversation.Id, data = new { name = "", Value = turnContext.Activity.Text, dataType = DarlVar.DataType.textual } },
+                    Query = @"query Interact($model: String!, $convId: String!, $data: darlVarUpdate!){interact(botModelName: $model, conversationId: $convId, conversationData: $data){ response { value dataType approximate categories } }}",
+                    OperationName = "Interact"
+                };
+                var resp = await client.PostAsync(req);
+                var responses = resp.GetDataFieldAs<List<InteractResponse>>("interact");
 
-                    case DarlVar.DataType.link:
-                        m = MessageFactory.Text($"[{r.response.value}]({r.response.value})");
-                        break;
+                foreach (var r in responses)
+                {
+                    Activity m = MessageFactory.Text("internal error");
+                    switch (r.response.dataType)
+                    {
+                        case DarlVar.DataType.categorical:
+                            m = MessageFactory.SuggestedActions(r.response.categories.Select( a => a.Key), r.response.value) as Activity;
+                            break;
 
-                    default:
-                        if (!string.IsNullOrEmpty(r.response.value))
-                        {
-                            m = MessageFactory.Text(r.response.value);
-                        }
-                        break;
+                        case DarlVar.DataType.link:
+                            m = MessageFactory.Text($"[{r.response.value}]({r.response.value})");
+                            break;
+
+                        default:
+                            if (!string.IsNullOrEmpty(r.response.value))
+                            {
+                                m = MessageFactory.Text(r.response.value);
+                            }
+                            break;
+                    }
+                    await turnContext.SendActivityAsync(m, cancellationToken);
                 }
-                await turnContext.SendActivityAsync(m, cancellationToken);
+            }
+            catch(Exception ex)
+            {
+                await turnContext.SendActivityAsync(MessageFactory.Text(ex.Message), cancellationToken);
             }
         }
 
