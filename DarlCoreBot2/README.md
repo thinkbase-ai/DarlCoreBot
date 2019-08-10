@@ -1,8 +1,5 @@
-﻿# DarlCoreBot2
-
-Bot Framework v4 echo bot sample.
-
-This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to create a simple bot that accepts input from the user and echoes it back.
+﻿# The DARL Bot
+This bot interfaces with the [DARL Bot framework](https://darl.ai) to create a bot hosted on Azure. The functionality of the bot is determined by the bot model hosted on [Darl.dev](https://darl.dev) and any rulesets (skills) you attach.
 
 ## Prerequisites
 
@@ -13,7 +10,21 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
   dotnet --version
   ```
 
-## To try this sample
+## To try this bot
+
+- Set up the AppSettings.json. Create a free account at [darl.dev](https://darl.dev) and retrieve your API key as described [here](https://darl.dev/docs/GraphQL_examples/#finding-your-api-key).
+ You will automatically be given a sample bot model called "thousandquestions.model" which you can insert below.
+
+    ```json
+    {
+      "MicrosoftAppId": "The app id or empty for local testing",
+      "MicrosoftAppPassword": "The app password or empty for local testing",
+      "DarlAPIAddress": "https://darl.dev/graphql/",
+      "DarlAPIKey": "The DARL API key for your account",
+      "DarlBotModel": "The name of the bot model you are using",
+      "initialText":  "Hello from DarlBot"
+    }
+    ```
 
 - In a terminal, navigate to `DarlCoreBot2`
 
@@ -57,13 +68,8 @@ To learn more about deploying a bot to Azure, see [Deploy your bot to Azure](htt
 
 ## Further reading
 
+- [DARL Bot Framework](https://darl.dev/docs)
 - [Bot Framework Documentation](https://docs.botframework.com)
-- [Bot Basics](https://docs.microsoft.com/azure/bot-service/bot-builder-basics?view=azure-bot-service-4.0)
-- [Activity processing](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-concept-activity-processing?view=azure-bot-service-4.0)
-- [Azure Bot Service Introduction](https://docs.microsoft.com/azure/bot-service/bot-service-overview-introduction?view=azure-bot-service-4.0)
-- [Azure Bot Service Documentation](https://docs.microsoft.com/azure/bot-service/?view=azure-bot-service-4.0)
-- [.NET Core CLI tools](https://docs.microsoft.com/en-us/dotnet/core/tools/?tabs=netcore2x)
 - [Azure CLI](https://docs.microsoft.com/cli/azure/?view=azure-cli-latest)
 - [Azure Portal](https://portal.azure.com)
-- [Language Understanding using LUIS](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/)
 - [Channels and Bot Connector Service](https://docs.microsoft.com/en-us/azure/bot-service/bot-concepts?view=azure-bot-service-4.0)
