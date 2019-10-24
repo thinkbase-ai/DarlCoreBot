@@ -117,7 +117,7 @@ namespace DarlCoreBot2.Models
         /// </summary>
         /// <value>The categories.</value>
         //public Dictionary<string, double> categories { get; set; }
-        public List<KeyValuePair<string,double>> categories { get; set; }
+        public List<NameValuePair> categories { get; set; }
 
 
         public List<DateTime> times { get; set; }
@@ -148,5 +148,11 @@ namespace DarlCoreBot2.Models
         /// </summary>
         /// <value>The value.</value>
         public string value { get; set; } = string.Empty;
+    }
+
+    public class NameValuePair
+    {
+        public string name { get; set; }
+        public double value { get; set; }
     }
 }

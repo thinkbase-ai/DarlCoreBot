@@ -42,7 +42,7 @@ namespace DarlCoreBot2.Bots
                 var req = new GraphQLRequest()
                 {
                     Variables = new { model = botModelName, convId = turnContext.Activity.Conversation.Id, data = new { name = "", Value = turnContext.Activity.Text, dataType = DarlVar.DataType.textual } },
-                    Query = @"query Interact($model: String!, $convId: String!, $data: darlVarUpdate!){interact(botModelName: $model, conversationId: $convId, conversationData: $data){ response { value dataType approximate categories } }}",
+                    Query = @"query Interact($model: String!, $convId: String!, $data: darlVarUpdate!){interact(botModelName: $model, conversationId: $convId, conversationData: $data){ response { value dataType approximate categories{name value} } }}",
                     OperationName = "Interact"
                 };
                 var resp = await client.PostAsync(req);
@@ -54,7 +54,7 @@ namespace DarlCoreBot2.Bots
                     switch (r.response.dataType)
                     {
                         case DarlVar.DataType.categorical:
-                            m = MessageFactory.SuggestedActions(r.response.categories.Select( a => a.Key), r.response.value) as Activity;
+                            m = MessageFactory.SuggestedActions(r.response.categories.Select( a => a.name), r.response.value) as Activity;
                             break;
 
                         case DarlVar.DataType.link:
