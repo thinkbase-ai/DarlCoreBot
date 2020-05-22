@@ -42,7 +42,7 @@ namespace DarlCoreBot2.Bots
                 var req = new GraphQLRequest()
                 {
                     Variables = new { model = botModelName, convId = turnContext.Activity.Conversation.Id, data = new { name = "", Value = turnContext.Activity.Text, dataType = DarlVar.DataType.textual } },
-                    Query = @"query Interact($model: String!, $convId: String!, $data: darlVarUpdate!){interact(botModelName: $model, conversationId: $convId, conversationData: $data){ response { value dataType approximate categories{name value} } }}",
+                    Query = @"query Interact($model: String!, $convId: String!, $data: darlVarInput!){interact(botModelName: $model, conversationId: $convId, conversationData: $data){ response { value dataType approximate categories{name value} } }}",
                     OperationName = "Interact"
                 };
                 var resp = await client.PostAsync(req);
