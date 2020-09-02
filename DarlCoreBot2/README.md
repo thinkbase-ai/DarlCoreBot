@@ -22,7 +22,8 @@ This bot interfaces with the [DARL Bot framework](https://darl.ai) to create a b
       "DarlAPIAddress": "https://darl.dev/graphql/",
       "DarlAPIKey": "The DARL API key for your account",
       "DarlBotModel": "The name of the bot model you are using",
-      "initialText":  "Hello from DarlBot"
+      "initialText":  "Hello from DarlBot",
+      "endpoint": "The words 'bot' or 'graph'. Use the latter for knowledge graphs "
     }
     ```
 

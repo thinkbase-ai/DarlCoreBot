@@ -22,6 +22,7 @@ namespace DarlCoreBot2.Bots
         GraphQLClient client = null;
         IConfiguration _config;
         string botModelName;
+        bool graph = false;
 
 
         public DarlBot(IConfiguration config)
@@ -32,6 +33,7 @@ namespace DarlCoreBot2.Bots
             client.DefaultRequestHeaders.Add("Authorization", $"Basic {authcode}");
             client.Options.JsonSerializerSettings.Converters.Add(new StringEnumConverter());
             botModelName = _config["DarlBotModel"];
+            graph = _config["endpoint"] == "graph";
         }
 
 
@@ -39,14 +41,17 @@ namespace DarlCoreBot2.Bots
         {
             try
             {
+                string query = graph 
+                    ? @"query Interact($model: String!, $convId: String!, $data: darlVarInput!){interactKnowledgeGraph(kgModelName: $model, conversationId: $convId, conversationData: $data){ response { value dataType approximate categories{name value} } }}"
+                    : @"query Interact($model: String!, $convId: String!, $data: darlVarInput!){interact(botModelName: $model, conversationId: $convId, conversationData: $data){ response { value dataType approximate categories{name value} } }}";
                 var req = new GraphQLRequest()
                 {
                     Variables = new { model = botModelName, convId = turnContext.Activity.Conversation.Id, data = new { name = "", Value = turnContext.Activity.Text, dataType = DarlVar.DataType.textual } },
-                    Query = @"query Interact($model: String!, $convId: String!, $data: darlVarInput!){interact(botModelName: $model, conversationId: $convId, conversationData: $data){ response { value dataType approximate categories{name value} } }}",
+                    Query = query,
                     OperationName = "Interact"
                 };
                 var resp = await client.PostAsync(req);
-                var responses = resp.GetDataFieldAs<List<InteractResponse>>("interact");
+                var responses = resp.GetDataFieldAs<List<InteractResponse>>(graph ? "interactKnowledgeGraph" : "interact");
 
                 foreach (var r in responses)
                 {
